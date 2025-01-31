@@ -1,0 +1,12 @@
+{
+  "name": "chat-app",
+  "version": "1.0.0",
+  "description": "- Tech stack: TypeScript + React + Socket.io + Prisma + TailwindCSS\r - Authentication && Authorization with JWT\r - Real-time messaging with Socket.io\r - Online user status (Socket.io and React Context)\r - Global state management with Zustand\r - Error handling both on the server and on the client",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
