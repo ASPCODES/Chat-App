@@ -2,11 +2,30 @@
   "name": "chat-app",
   "version": "1.0.0",
   "description": "- Tech stack: TypeScript + React + Socket.io + Prisma + TailwindCSS\r - Authentication && Authorization with JWT\r - Real-time messaging with Socket.io\r - Online user status (Socket.io and React Context)\r - Global state management with Zustand\r - Error handling both on the server and on the client",
-  "main": "index.js",
+  "main": "backend/dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon --exec tsx backend/src/index.ts"
   },
+  "type": "module",
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/cookie-parser": "^1.4.8",
+    "@types/express": "^5.0.0",
+    "@types/jsonwebtoken": "^9.0.8",
+    "nodemon": "^3.1.9",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.3.0",
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "prisma": "^6.3.0"
+  }
 }

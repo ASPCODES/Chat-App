@@ -1,4 +1,4 @@
-## Building a Real Time Chat App | Postgres, TypeScript, Prisma
+## Building a Real Time Chat App | React, Tailwind, Postgres, TypeScript, Prisma
 
 ## Some Features:
 
