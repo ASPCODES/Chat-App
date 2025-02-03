@@ -3,22 +3,25 @@ import bcryptjs from "bcryptjs";
 import prisma from "../db/prisma.js";
 import generateTokenAndSessionCookie from "../utils/generateToken.js";
 
-export const signup = async (req: Request, res: Response) => {
+export const signup = async (req: Request, res: Response): Promise<void> => {
   try {
     const { username, fullName, password, gender, confirmPassword } = req.body;
 
     if (!fullName || !username || !password || !gender || !confirmPassword) {
-      return res.status(400).json({ error: "Kindly fill In all fields" });
+      res.status(400).json({ error: "Kindly fill In all fields" });
+      return;
     }
 
     if (password !== confirmPassword) {
-      return res.status(400).json({ error: "Password don't match" });
+      res.status(400).json({ error: "Password don't match" });
+      return;
     }
 
     const user = await prisma.user.findUnique({ where: { username } });
 
     if (user) {
       res.status(400).json({ error: "Username already exists !!" });
+      return;
     }
 
     const salt = await bcryptjs.genSalt(10);
@@ -58,26 +61,28 @@ export const signup = async (req: Request, res: Response) => {
   }
 };
 
-export const login = async (req: Request, res: Response) => {
+export const login = async (req: Request, res: Response): Promise<void> => {
   try {
     const { username, password } = req.body;
     const user = await prisma.user.findUnique({ where: { username } });
 
     if (!user) {
-      return res.status(400).json({ error: "Invalid credentials" });
+      res.status(400).json({ error: "Invalid credentials" });
+      return;
     }
 
     const isPasswordCorrect = await bcryptjs.compare(password, user.password);
 
     if (!isPasswordCorrect) {
-      return res.status(400).json({ error: "Invalid Credentials" });
+      res.status(400).json({ error: "Invalid Credentials" });
+      return;
     }
 
     generateTokenAndSessionCookie(user.id, res);
 
     res.status(200).json({
       id: user.id,
-      fullname: user.fullName,
+      fullName: user.fullName,
       username: user.username,
       profilePic: user.profilePic,
     });
@@ -87,18 +92,35 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
-export const logout = async (req: Request, res: Response) => {
+export const logout = async (req: Request, res: Response): Promise<void> => {
   try {
     // clear the authentication cookie(If using JWT stored in cookie)
-    res.cookie("token", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      samesite: "strict",
-    });
-
-    return res.status(200).json({ message: "Logged out successfully!" });
+    res.cookie("jwt", "", { maxAge: 0 });
+    res.status(200).json({ message: "Logged out successfully!" });
+    return;
   } catch (error: any) {
     console.log("Error in logout controller", error.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+export const getMe = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const user = await prisma.user.findUnique({ where: { id: req.user?.id } });
+
+    if (!user) {
+      res.status(404).json({ error: "User not found!" });
+      return;
+    }
+
+    res.status(200).json({
+      id: user.id,
+      fullName: user.fullName,
+      username: user.username,
+      profilePic: user.profilePic,
+    });
+  } catch (error: any) {
+    console.log("Error in getMe controller", error.message);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
