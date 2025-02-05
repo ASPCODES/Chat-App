@@ -154,3 +154,59 @@ export const getMessages = async (
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+export const getUsersForSidebars = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const userId = req.user?.id;
+
+    if (!userId) {
+      res.status(401).json({ error: "Unauthorized" });
+      return;
+    }
+
+    // Fetch conversations where the user is a participant
+    const conversations = await prisma.conversation.findMany({
+      where: {
+        participants: {
+          some: { userId },
+        },
+      },
+      include: {
+        participants: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                username: true,
+                fullName: true,
+                profilePic: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: {
+        lastMessageAt: "desc",
+      },
+    });
+
+    // Extract unique users from conversations (excluding the current user)
+    const users = new Map();
+
+    conversations.forEach((conversation) => {
+      conversation.participants.forEach((participant) => {
+        if (participant.userId !== userId) {
+          users.set(participant.user.id, participant.user);
+        }
+      });
+    });
+
+    res.status(200).json(Array.from(users.values()));
+  } catch (error: any) {
+    console.error("Error in getUsersForSidebars: ", error.message);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
