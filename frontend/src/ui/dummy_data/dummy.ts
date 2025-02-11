@@ -6,7 +6,7 @@ export const DUMMY_CONVERSATIONS = [
     emoji: "🎃",
   },
   {
-    id: 2, 
+    id: 2,
     fullName: "Jane Victor",
     profilePic: "https://avatar.iran.liara.run/public/girl?username=janevictor",
     emoji: "👻",
@@ -28,12 +28,6 @@ export const DUMMY_CONVERSATIONS = [
     fullName: "Charlie",
     profilePic: "https://avatar.iran.liara.run/public/girl?username=charlie",
     emoji: "🧛",
-  },
-  {
-    id: 6,
-    fullName: "Becky",
-    profilePic: "https://avatar.iran.liara.run/public/girl?username=becky",
-    emoji: "👰",
   },
 ];
 
